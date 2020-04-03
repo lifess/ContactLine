@@ -15,14 +15,11 @@ import androidx.annotation.Nullable;
 
 public class DrawView extends View {
 
-
-    private Context mContext;
     private Paint paint;
-    private float mStartX;
-    private float mStartY;
-    private float mTop;
-    private float mBottom;
     private int size;
+    private ArrayList<RangePointBean> startList;
+    private Context mContext;
+
 
     public DrawView(Context context) {
         super(context);
@@ -66,31 +63,26 @@ public class DrawView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int width = getWidth();
+        int height = getHeight();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (size > 0  && list.size() < size && mStartY != 0) {
-                    startX = mStartX;
-                    startY = mStartY;
+                //根据数据的大小来确定可以画几条线
+                if (size > -1 && list.size() < size) {
+                    startX = 0;
+                    startY = event.getY();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (size > 0 && list.size() < size && mStartY != 0) {
+                if (size > -1 && list.size() < size) {
                     endX = event.getX();
                     endY = event.getY();
                     invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                int width = getWidth();
-                int height = getHeight();
-                if (width <= endX && height > endY) {
-                    Iterator<float[]> iterator = list.iterator();
-                    while (iterator.hasNext()){
-                        float[] next = iterator.next();
-                        if (next[0] == startX && next[1] == startY || next[3] > mTop && next[3] < mBottom ) {
-                            iterator.remove();
-                        }
-                    }
+                if (width <= endX && height >= endY) {
+                    deleteSameLine();
                     float[] data = {startX, startY, endX, endY};
                     list.add(data);
                 }
@@ -99,17 +91,36 @@ public class DrawView extends View {
         return true;
     }
 
-    public void setStartPoint(float startX, float startY) {
-        mStartX = startX;
-        mStartY = startY;
-    }
-
-    public void setEndPoint(float top, float bottom) {
-        mTop = top;
-        mBottom = bottom;
+    private void deleteSameLine() {
+        Iterator<float[]> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            float[] next = iterator.next();
+            for (int i = 0; i < startList.size(); i++) {
+                RangePointBean s = startList.get(i);
+                float leftTop = s.getLeftTop();
+                float leftBottom = s.getLeftBottom();
+                //删除起点在同一个范围内的线,如果起点和终点连得一样，谁先遍历到，谁先走，并return
+                if (startY >= leftTop && startY <= leftBottom
+                        && next[1] >= leftTop && next[1] <= leftBottom) {
+                    iterator.remove();
+                    return;
+                }
+                //删除终点在同一个范围内的线
+                if (endY >= leftTop && endY <= leftBottom
+                        && next[3] >= leftTop && next[3] <= leftBottom) {
+                    iterator.remove();
+                    return;
+                }
+            }
+        }
     }
 
     public void getDataSize(int size) {
         this.size = size;
     }
+
+    public void setStartPoint(ArrayList<RangePointBean> startList) {
+        this.startList = startList;
+    }
+
 }

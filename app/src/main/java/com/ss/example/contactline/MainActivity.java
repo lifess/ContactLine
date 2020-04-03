@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.ss.example.contactline.drawline.DrawView;
 import com.ss.example.contactline.drawline.SetDataView;
 
 import java.lang.reflect.Type;
@@ -17,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-
 
 
     @BindView(R.id.sdv)
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         }.getType();
         List<LinkDataBean> list = null;
         try {
-            list = new Gson().fromJson(data,type);
+            list = new Gson().fromJson(data, type);
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }

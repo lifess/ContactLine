@@ -19,10 +19,11 @@
         android:layout_height="wrap_content" />
 
     <com.ss.example.contactline.drawline.DrawView
+        android:layout_marginTop="10dp"
         android:layout_toLeftOf="@id/rlv_right"
         android:layout_toRightOf="@id/rlv_left"
         android:layout_alignBottom="@id/rlv_left"
         android:id="@+id/draw_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

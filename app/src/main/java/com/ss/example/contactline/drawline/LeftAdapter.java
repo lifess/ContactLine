@@ -1,7 +1,6 @@
 package com.ss.example.contactline.drawline;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,12 @@ import android.widget.TextView;
 import com.ss.example.contactline.LinkDataBean;
 import com.ss.example.contactline.R;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder>{
+public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder> {
 
     private Context mContext;
     private List<LinkDataBean> mLeftList;
@@ -32,7 +29,7 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder>{
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(mContext).inflate(R.layout.left_data, parent,false);
+        View inflate = LayoutInflater.from(mContext).inflate(R.layout.left_data, parent, false);
         return new ViewHolder(inflate);
     }
 
@@ -40,28 +37,11 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         LinkDataBean linkDataBean = mLeftList.get(position);
         holder.mTvLeft.setText(linkDataBean.getContent());
-        for (int i = 0; i < mLeftList.size(); i++) {
-            View itemView = holder.mTvLeft;
-            int top = itemView.getTop();
-            int bottom = itemView.getBottom();
-            Log.i("======", "addLeftView: "+"top:"+top +"------"+"bottom:"+ bottom);
-        }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                float startX = view.getLeft();
-//                float startY = (view.getTop() + view.getBottom()) / 2f;
-//                if (mListener != null) {
-//                    mListener.onLeftClick(startX, startY);
-//                }
-//            }
-//        });
-
     }
 
     @Override
     public int getItemCount() {
-        return mLeftList.size()>0 ? mLeftList.size() : 0;
+        return mLeftList.size() > 0 ? mLeftList.size() : 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -74,11 +54,12 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder>{
         }
     }
 
-    public void setClick(onClickListener listener){
+    public void setClick(onClickListener listener) {
 
         mListener = listener;
     }
-    public interface onClickListener{
+
+    public interface onClickListener {
         void onLeftClick(float startX, float startY);
     }
 }

@@ -1,13 +1,11 @@
 package com.ss.example.contactline.drawline;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.ss.example.contactline.LinkDataBean;
@@ -21,10 +19,10 @@ import java.util.List;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SetDataView extends RelativeLayout implements LeftAdapter.onClickListener, RightAdapter.onClickListener{
+public class SetDataView extends RelativeLayout {
 
-    private RecyclerView llLeft;
-    private RecyclerView llRight;
+    private RecyclerView rlvLeft;
+    private RecyclerView rlvRight;
     private List<LinkDataBean> allList = new ArrayList<>();
     private List<LinkDataBean> leftList = new ArrayList<>();
     private List<LinkDataBean> rightList = new ArrayList<>();
@@ -33,8 +31,8 @@ public class SetDataView extends RelativeLayout implements LeftAdapter.onClickLi
     private Context context;
     private LeftAdapter mLeftAdapter;
     private RightAdapter mRightAdapter;
-    private Paint paint;
     private DrawView drawView;
+    private ArrayList<RangePointBean> startList = new ArrayList<>();
 
     public SetDataView(Context context) {
         super(context);
@@ -51,12 +49,9 @@ public class SetDataView extends RelativeLayout implements LeftAdapter.onClickLi
 
     private void init(Context context) {
         this.context = context;
-        paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(5);
         View inflate = LayoutInflater.from(context).inflate(R.layout.item_data, this);
-        llLeft = inflate.findViewById(R.id.rlv_left);
-        llRight = inflate.findViewById(R.id.rlv_right);
+        rlvLeft = inflate.findViewById(R.id.rlv_left);
+        rlvRight = inflate.findViewById(R.id.rlv_right);
         drawView = inflate.findViewById(R.id.draw_view);
     }
 
@@ -96,43 +91,39 @@ public class SetDataView extends RelativeLayout implements LeftAdapter.onClickLi
     }
 
     private void addLeftView() {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        llLeft.setLayoutManager(layoutManager);
-        mLeftAdapter = new LeftAdapter(getContext(),leftList);
-        llLeft.setAdapter(mLeftAdapter);
-        mLeftAdapter.setClick(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rlvLeft.setLayoutManager(layoutManager);
+        mLeftAdapter = new LeftAdapter(context, leftList);
+        rlvLeft.setAdapter(mLeftAdapter);
         mLeftAdapter.notifyDataSetChanged();
-        /*Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        rlvLeft.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void run() {
+            public void onGlobalLayout() {
                 for (int i = 0; i < leftList.size(); i++) {
-//                    View childAt = llLeft.getChildAt(i);
+                    RangePointBean rangePointBean = new RangePointBean();
                     View childAt = layoutManager.findViewByPosition(i);
                     if (childAt != null) {
-                        int top = childAt.getTop();
-                        int bottom = childAt.getBottom();
-                        Log.i("======", "addLeftView: "+top +" : "+ bottom);
+                        float top = childAt.getTop();
+                        float bottom = childAt.getBottom();
+                        Log.i("======", "addLeftView: " + "top:" + top + "------" + "bottom:" + bottom);
+                        rangePointBean.setLeftTop(top);
+                        rangePointBean.setLeftBottom(bottom);
+                        startList.add(rangePointBean);
+                    }
+                    if (leftList.size() - 1 == i) {
+                        rlvLeft.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 }
+                drawView.setStartPoint(startList);
             }
-        },200);*/
+        });
     }
 
     private void addRightView() {
-        llRight.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRightAdapter = new RightAdapter(getContext(), rightList);
-        llRight.setAdapter(mRightAdapter);
-        mRightAdapter.setClick(this);
-    }
-
-    @Override
-    public void onLeftClick(float startX, float startY) {
-        drawView.setStartPoint(startX, startY);
-    }
-
-    @Override
-    public void onRightClick(float top, float bottom) {
-        drawView.setEndPoint(top, bottom);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        rlvRight.setLayoutManager(linearLayoutManager);
+        mRightAdapter = new RightAdapter(context, rightList);
+        rlvRight.setAdapter(mRightAdapter);
+        mRightAdapter.notifyDataSetChanged();
     }
 }

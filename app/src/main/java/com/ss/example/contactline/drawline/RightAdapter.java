@@ -14,7 +14,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder>{
+public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder> {
 
     private Context mContext;
     private List<LinkDataBean> mRightList;
@@ -37,16 +37,6 @@ public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LinkDataBean linkDataBean = mRightList.get(position);
         holder.mTvRight.setText(linkDataBean.getContent());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                float top = view.getTop();
-                float bottom = view.getBottom();
-                if (mListener != null) {
-                    mListener.onRightClick(top,bottom);
-                }
-            }
-        });
     }
 
     @Override
@@ -63,11 +53,12 @@ public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder>{
         }
     }
 
-    public void setClick(onClickListener listener){
+    public void setClick(onClickListener listener) {
 
         mListener = listener;
     }
-    public interface onClickListener{
+
+    public interface onClickListener {
         void onRightClick(float endX, float endY);
     }
 }
