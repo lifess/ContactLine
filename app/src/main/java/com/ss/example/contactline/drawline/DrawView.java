@@ -69,7 +69,11 @@ public class DrawView extends View {
             case MotionEvent.ACTION_DOWN:
                 //根据数据的大小来确定可以画几条线
                 if (size > -1 && list.size() < size) {
-                    startX = 0;
+                    if (event.getX() < width / 2f) {
+                        startX = 0;
+                    }else {
+                        startX = width;
+                    }
                     startY = event.getY();
                 }
                 break;
@@ -81,7 +85,8 @@ public class DrawView extends View {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (width <= endX && height >= endY) {
+                //判断正连线，以及反连线
+                if (width <= endX && height >= endY || endX <= 0 && height >= endY) {
                     deleteSameLine();
                     float[] data = {startX, startY, endX, endY};
                     list.add(data);

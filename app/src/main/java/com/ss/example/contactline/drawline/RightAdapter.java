@@ -29,7 +29,7 @@ public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(mContext).inflate(R.layout.right_data, null);
+        View inflate = LayoutInflater.from(mContext).inflate(R.layout.right_data, parent,false);
         return new ViewHolder(inflate);
     }
 

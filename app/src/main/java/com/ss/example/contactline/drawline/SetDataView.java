@@ -108,6 +108,7 @@ public class SetDataView extends RelativeLayout {
                         Log.i("======", "addLeftView: " + "top:" + top + "------" + "bottom:" + bottom);
                         rangePointBean.setLeftTop(top);
                         rangePointBean.setLeftBottom(bottom);
+                        rangePointBean.setQ_num(leftList.get(i).getQ_num());
                         startList.add(rangePointBean);
                     }
                     if (leftList.size() - 1 == i) {

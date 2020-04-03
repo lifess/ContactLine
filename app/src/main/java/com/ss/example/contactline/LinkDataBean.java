@@ -1,11 +1,6 @@
 package com.ss.example.contactline;
 
-/**
- * @Description: 连线的原数据
- * @Author wangjianzhou@qding.me
- * @Date 2020/3/22 10:41 PM
- * @Version
- */
+
 public class LinkDataBean {
 
     /**
