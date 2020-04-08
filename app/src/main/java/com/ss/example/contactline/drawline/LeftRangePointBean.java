@@ -2,7 +2,7 @@ package com.ss.example.contactline.drawline;
 
 import java.io.Serializable;
 
-public class RangePointBean implements Serializable {
+public class LeftRangePointBean implements Serializable {
     private static final long serialVersionUID = -9016226763399909177L;
     private float leftTop;
     private float leftBottom;

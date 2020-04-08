@@ -32,7 +32,8 @@ public class SetDataView extends RelativeLayout {
     private LeftAdapter mLeftAdapter;
     private RightAdapter mRightAdapter;
     private DrawView drawView;
-    private ArrayList<RangePointBean> startList = new ArrayList<>();
+    private ArrayList<LeftRangePointBean> leftRangeList = new ArrayList<>();
+    private ArrayList<RightRangePointBean> rightRangeList = new ArrayList<>();
 
     public SetDataView(Context context) {
         super(context);
@@ -90,6 +91,26 @@ public class SetDataView extends RelativeLayout {
         addRightView();
     }
 
+    private void getResultList() {
+        int width = drawView.getWidth();
+        List<LinkLineBean> resultList = new ArrayList<>();
+            for (int i = 0; i < leftRangeList.size(); i++) {
+                float leftTop = leftRangeList.get(i).getLeftTop();
+                float leftBottom = leftRangeList.get(i).getLeftBottom();
+                LeftRangePointBean leftRangePointBean = leftRangeList.get(i);
+                for (int j = 0; j < rightRangeList.size(); j++) {
+                    RightRangePointBean rightRangePointBean = rightRangeList.get(j);
+                    if (leftRangePointBean.getQ_num() == rightRangePointBean.getQ_num()) {
+                        float rightTop = rightRangeList.get(j).getRightTop();
+                        float rightBottom = rightRangeList.get(j).getRightBottom();
+                        LinkLineBean leftLinkLineBean = new LinkLineBean(leftTop, leftBottom, rightTop, rightBottom);
+                        resultList.add(leftLinkLineBean);
+                    }
+                }
+            }
+            drawView.getRightAnswer(resultList);
+    }
+
     private void addLeftView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rlvLeft.setLayoutManager(layoutManager);
@@ -100,22 +121,22 @@ public class SetDataView extends RelativeLayout {
             @Override
             public void onGlobalLayout() {
                 for (int i = 0; i < leftList.size(); i++) {
-                    RangePointBean rangePointBean = new RangePointBean();
+                    LeftRangePointBean leftRangePointBean = new LeftRangePointBean();
                     View childAt = layoutManager.findViewByPosition(i);
                     if (childAt != null) {
                         float top = childAt.getTop();
                         float bottom = childAt.getBottom();
                         Log.i("======", "addLeftView: " + "top:" + top + "------" + "bottom:" + bottom);
-                        rangePointBean.setLeftTop(top);
-                        rangePointBean.setLeftBottom(bottom);
-                        rangePointBean.setQ_num(leftList.get(i).getQ_num());
-                        startList.add(rangePointBean);
+                        leftRangePointBean.setLeftTop(top);
+                        leftRangePointBean.setLeftBottom(bottom);
+                        leftRangePointBean.setQ_num(leftList.get(i).getQ_num());
+                        leftRangeList.add(leftRangePointBean);
                     }
                     if (leftList.size() - 1 == i) {
                         rlvLeft.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 }
-                drawView.setStartPoint(startList);
+                drawView.setStartPoint(leftRangeList);
             }
         });
     }
@@ -126,5 +147,28 @@ public class SetDataView extends RelativeLayout {
         mRightAdapter = new RightAdapter(context, rightList);
         rlvRight.setAdapter(mRightAdapter);
         mRightAdapter.notifyDataSetChanged();
+        rlvRight.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                for (int i = 0; i < rightList.size(); i++) {
+                    RightRangePointBean rightRangePointBean = new RightRangePointBean();
+                    View childAt = linearLayoutManager.findViewByPosition(i);
+                    if (childAt != null) {
+                        float top = childAt.getTop();
+                        float bottom = childAt.getBottom();
+                        Log.i("======", "addLeftView: " + "top:" + top + "------" + "bottom:" + bottom);
+                        rightRangePointBean.setRightTop(top);
+                        rightRangePointBean.setRightBottom(bottom);
+                        rightRangePointBean.setQ_num(rightList.get(i).getQ_num());
+                        rightRangeList.add(rightRangePointBean);
+                    }
+                    if (rightList.size() - 1 == i) {
+                        rlvRight.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                }
+                getResultList();
+                drawView.setRightPoint(rightRangeList);
+            }
+        });
     }
 }
