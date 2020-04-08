@@ -174,13 +174,20 @@ public class DrawView extends View {
                 while (iterator.hasNext()) {
                     float[] next = iterator.next();
                     Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + ": " + next[3]);
-                    if (next[1] >= leftTop && next[1] <= leftBottom
-                            && next[3] >= rightTop && next[3] <= rightBottom
-                            || next[1] >= rightTop && next[1] <= rightBottom
-                            && next[3] >= leftTop && next[3] <= leftTop) {
-                        Log.i("sss", "verifyResult: " + "right");
-                        isRight = true;
-                        rightList.add(next);
+                    if (next[0] == 0.0f) {
+                        if (next[1] >= leftTop && next[1] <= leftBottom
+                                && next[3] >= rightTop && next[3] <= rightBottom) {
+                            Log.i("sss", "verifyResult: " + "right");
+                            isRight = true;
+                            rightList.add(next);
+                        }
+                    } else {
+                        if (next[1] >= rightTop && next[1] <= rightBottom
+                                && next[3] >= leftTop && next[3] <= leftBottom) {
+                            Log.i("sss", "verifyResult: " + "right");
+                            isRight = true;
+                            rightList.add(next);
+                        }
                     }
                 }
                 if (!isRight) {
