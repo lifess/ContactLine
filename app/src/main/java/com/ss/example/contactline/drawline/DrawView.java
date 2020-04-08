@@ -146,13 +146,17 @@ public class DrawView extends View {
                 float leftBottom = s.getLeftBottom();
                 //删除起点在同一个范围内的线,如果起点和终点连得一样，谁先遍历到，谁先走，并return
                 if (startY >= leftTop && startY <= leftBottom
-                        && next[0] == startX && next[1] >= leftTop && next[1] <= leftBottom) {
+                        && next[1] >= leftTop && next[1] <= leftBottom
+                        || startY >= leftTop && startY <= leftBottom && endY >= leftTop && endY <= leftBottom
+                        && next[1] >= leftTop && next[1] <= leftBottom) {
                     iterator.remove();
                     return;
                 }
                 //删除终点在同一个范围内的线
                 if (endY >= leftTop && endY <= leftBottom
-                        && next[3] >= leftTop && next[3] <= leftBottom && next[2] == endX) {
+                        && next[3] >= leftTop && next[3] <= leftBottom
+                        || startY >= leftTop && startY <= leftBottom && endY >= leftTop && endY <= leftBottom
+                        && next[3] >= leftTop && next[3] <= leftBottom) {
                     iterator.remove();
                     return;
                 }
@@ -174,7 +178,7 @@ public class DrawView extends View {
                 Iterator<float[]> iterator = list.iterator();
                 while (iterator.hasNext()) {
                     float[] next = iterator.next();
-                    Log.i("sss", "verifyResult: " +next[0]+": "+ next[1] + ": " + next[3]);
+                    Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + ": " + next[3]);
                     if (next[1] >= leftTop && next[1] <= leftBottom
                             && next[3] >= rightTop && next[3] <= rightBottom
                             || next[1] >= rightTop && next[1] <= rightBottom
