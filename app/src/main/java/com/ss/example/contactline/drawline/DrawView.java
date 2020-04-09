@@ -29,6 +29,7 @@ public class DrawView extends View {
     private Paint rightPaint;
     private Paint worryPaint;
     private boolean isRight = false;
+    private boolean isSave = true;
 
 
     public DrawView(Context context) {
@@ -64,6 +65,10 @@ public class DrawView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawLine(startX, startY, endX, endY, paint);
+        if (!isSave) {
+            paint.setColor(Color.BLACK);
+            isSave = true;
+        }
         for (int i = 0; i < list.size(); i++) {
             float[] data = list.get(i);
             canvas.drawLine(data[0], data[1], data[2], data[3], paint);
@@ -80,7 +85,6 @@ public class DrawView extends View {
             }
             isVerify = false;
         }
-
     }
 
     float startX = 0;
@@ -125,6 +129,10 @@ public class DrawView extends View {
                     float[] data = {startX, startY, endX, endY};
                     list.add(data);
                     verifyResult(width);
+                } else {
+                    isSave = false;
+                    paint.setColor(Color.TRANSPARENT);
+                    invalidate();
                 }
                 break;
         }
@@ -139,21 +147,66 @@ public class DrawView extends View {
                 LeftRangePointBean s = startList.get(i);
                 float leftTop = s.getLeftTop();
                 float leftBottom = s.getLeftBottom();
-                //删除起点在同一个范围内的线,如果起点和终点连得一样，谁先遍历到，谁先走，并return
-                if (startY >= leftTop && startY <= leftBottom
-                        && next[1] >= leftTop && next[1] <= leftBottom && next[0] == startX
-                        || startY >= leftTop && startY <= leftBottom && next[3] >= leftTop && next[3] <= leftBottom
-                        && next[1] >= leftTop && next[1] <= leftBottom) {
-                    iterator.remove();
-                    return;
-                }
-                //删除终点在同一个范围内的线
-                if (endY >= leftTop && endY <= leftBottom
-                        && next[3] >= leftTop && next[3] <= leftBottom && next[2] == endX
-                        || endY >= leftTop && endY <= leftBottom && next[1] >= leftTop && next[1] <= leftBottom
-                        && next[3] >= leftTop && next[3] <= leftBottom) {
-                    iterator.remove();
-                    return;
+                for (int j = 0; j < rightRangeList.size(); j++) {
+                    RightRangePointBean bean = rightRangeList.get(j);
+                    float rightTop = bean.getRightTop();
+                    float rightBottom = bean.getRightBottom();
+
+                    //左右连线相同，并且集合中的线的开始点和这次的线的开始点相同，移除
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && next[1] >= leftTop && next[1] <= leftBottom
+                            && next[3] >= rightTop && next[3] <= rightBottom
+                            && next[0] == startX && next[2] == endX) {
+                        iterator.remove();
+                    }
+
+                    ////左右连线相同，并且集合中的线的开始点和这次的线的结束点相同，移除
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && next[1] >= rightTop && next[1] <= rightBottom
+                            && next[3] >= leftTop && next[3] <= leftBottom
+                            && next[0] == endX && next[2] == startX) {
+                        iterator.remove();
+                    }
+
+                    //右连线不同，删除起点在同一个范围内,但终点不在同一个范围内的线
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && next[1] >= leftTop && next[1] <= leftBottom
+                            && (next[3] <= rightTop || next[3] >= rightBottom)
+                            && next[0] == startX) {
+                        iterator.remove();
+                    }
+
+                    //左连线不同，删除终点在同一个范围内,但起点不在同一个范围内的线
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && (next[1] <= leftTop || next[1] >= leftBottom)
+                            && next[3] >= rightTop && next[3] <= rightBottom
+                            && next[2] == endX) {
+                        iterator.remove();
+                    }
+
+                    //左右连线相反时，集合里的线从右到左，这次的线从左到右，并且集合的线的终点和这次线的起点在同一个范围，
+                    //但集合的线的起点和这次线的终点不在同一个范围
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && (next[1] <= rightTop || next[1] >= rightBottom)
+                            && next[3] >= leftTop && next[3] <= leftBottom
+                            && next[2] == startX) {
+                        iterator.remove();
+                    }
+
+                    //左右连线相反时，集合里的线从左到右，这次的线从右到左，并且集合的线的起点和这次线的终点在同一个范围，
+                    //但集合的线的终点和这次线的起点不在同一个范围
+                    if (startY >= leftTop && startY <= leftBottom
+                            && endY >= rightTop && endY <= rightBottom
+                            && next[1] >= rightTop && next[1] <= rightBottom
+                            && (next[3] <= leftTop || next[3] >= leftBottom)
+                            && next[0] == endX) {
+                        iterator.remove();
+                    }
                 }
             }
         }
@@ -169,19 +222,20 @@ public class DrawView extends View {
                 float leftBottom = linkLineBean.getLeftBottom();
                 float rightTop = linkLineBean.getRightTop();
                 float rightBottom = linkLineBean.getRightBottom();
-                Log.i("sss", "verifyResult: " + leftTop + ": " + leftBottom + "---------" + rightTop + ": " + rightBottom);
+                Log.i("sss", "verifyResult: 对的连线：" + leftTop + ": " + leftBottom + "---------" + rightTop + ": " + rightBottom);
                 Iterator<float[]> iterator = list.iterator();
                 while (iterator.hasNext()) {
                     float[] next = iterator.next();
-                    Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + ": " + next[3]);
-                    if (next[0] == 0.0f) {
+                    Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + "-------" + next[2] + ": " + next[3]);
+                    if (next[0] == 0) {//如果从左边连的
                         if (next[1] >= leftTop && next[1] <= leftBottom
                                 && next[3] >= rightTop && next[3] <= rightBottom) {
                             Log.i("sss", "verifyResult: " + "right");
                             isRight = true;
                             rightList.add(next);
                         }
-                    } else {
+                    }
+                    if (next[0] == width) {//如果从右边连的
                         if (next[1] >= rightTop && next[1] <= rightBottom
                                 && next[3] >= leftTop && next[3] <= leftBottom) {
                             Log.i("sss", "verifyResult: " + "right");
