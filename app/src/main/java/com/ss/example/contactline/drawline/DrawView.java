@@ -17,14 +17,19 @@ import androidx.annotation.Nullable;
 
 public class DrawView extends View {
 
-    private Paint paint;
     private int size;
-    private ArrayList<LeftRangePointBean> startList;
+    private Paint paint;
     private Context mContext;
-    private ArrayList<RightRangePointBean> endList;
+    private float startX = 0;
+    private float startY = 0;
+    private float endX = 0;
+    private float endY = 0;
+    private List<float[]> list = new ArrayList<>();
+    private List<LeftRangePointBean> startList;
+    private List<RightRangePointBean> endList;
     private List<LinkLineBean> resultList;
-    private ArrayList<float[]> rightList = new ArrayList<>();
-    private ArrayList<float[]> worryList = new ArrayList<>();
+    private List<float[]> rightList = new ArrayList<>();
+    private List<float[]> worryList = new ArrayList<>();
     private boolean isVerify = false;
     private boolean isRight = false;
     private boolean isSave = true;
@@ -67,7 +72,7 @@ public class DrawView extends View {
                 float[] data = list.get(i);
                 canvas.drawLine(data[0], data[1], data[2], data[3], paint);
             }
-        }else {
+        } else {
             for (int i = 0; i < rightList.size(); i++) {
                 paint.setColor(Color.GREEN);
                 float[] data = rightList.get(i);
@@ -80,19 +85,12 @@ public class DrawView extends View {
             }
             if (worryList.size() > 0) {
                 if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(false);
-            }else {
+            } else {
                 if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(true);
             }
 //            isVerify = false;
         }
     }
-
-    float startX = 0;
-    float startY = 0;
-
-    float endX = 0;
-    float endY = 0;
-    ArrayList<float[]> list = new ArrayList<>();
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -262,11 +260,11 @@ public class DrawView extends View {
         this.size = size;
     }
 
-    public void setStartPoint(ArrayList<LeftRangePointBean> startList) {
+    public void setStartPoint(List<LeftRangePointBean> startList) {
         this.startList = startList;
     }
 
-    public void setEndPoint(ArrayList<RightRangePointBean> rightRangeList) {
+    public void setEndPoint(List<RightRangePointBean> rightRangeList) {
         this.endList = rightRangeList;
     }
 

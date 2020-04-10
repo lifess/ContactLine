@@ -22,20 +22,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SetDataView extends RelativeLayout {
 
+    private int size;
+    private Context context;
+    private DrawView drawView;
+    private TextView tvResult;
     private RecyclerView rlvLeft;
     private RecyclerView rlvRight;
+    private LeftAdapter mLeftAdapter;
+    private RightAdapter mRightAdapter;
     private List<LinkDataBean> allList = new ArrayList<>();
     private List<LinkDataBean> leftList = new ArrayList<>();
     private List<LinkDataBean> rightList = new ArrayList<>();
-    private int size;
-
-    private Context context;
-    private LeftAdapter mLeftAdapter;
-    private RightAdapter mRightAdapter;
-    private DrawView drawView;
-    private ArrayList<LeftRangePointBean> leftRangeList = new ArrayList<>();
-    private ArrayList<RightRangePointBean> rightRangeList = new ArrayList<>();
-    private TextView tvResult;
+    private List<LeftRangePointBean> leftRangeList = new ArrayList<>();
+    private List<RightRangePointBean> rightRangeList = new ArrayList<>();
 
     public SetDataView(Context context) {
         super(context);
@@ -59,18 +58,6 @@ public class SetDataView extends RelativeLayout {
         tvResult = inflate.findViewById(R.id.tv_result);
     }
 
-    public void getResult() {
-        drawView.setOnChoiceResultListener(new DrawView.OnChoiceResultListener() {
-            @Override
-            public void onResultSelected(boolean correct) {
-                StringBuilder sp = new StringBuilder();
-                sp.append("正确与否：");
-                sp.append(correct);
-                sp.append("\n");
-                tvResult.setText(sp.toString());
-            }
-        });
-    }
 
     public void setData(List<LinkDataBean> linkDataBeanList) {
         if (linkDataBeanList == null || linkDataBeanList.size() == 0) {
@@ -108,7 +95,6 @@ public class SetDataView extends RelativeLayout {
     }
 
     private void getResultList() {
-        int width = drawView.getWidth();
         List<LinkLineBean> resultList = new ArrayList<>();
         for (int i = 0; i < leftRangeList.size(); i++) {
             float leftTop = leftRangeList.get(i).getLeftTop();
@@ -184,6 +170,19 @@ public class SetDataView extends RelativeLayout {
                 }
                 getResultList();
                 drawView.setEndPoint(rightRangeList);
+            }
+        });
+    }
+
+    public void getResult() {
+        drawView.setOnChoiceResultListener(new DrawView.OnChoiceResultListener() {
+            @Override
+            public void onResultSelected(boolean correct) {
+                StringBuilder sp = new StringBuilder();
+                sp.append("正确与否：");
+                sp.append(correct);
+                sp.append("\n");
+                tvResult.setText(sp.toString());
             }
         });
     }
