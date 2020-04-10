@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ss.example.contactline.LinkDataBean;
 import com.ss.example.contactline.R;
@@ -34,6 +35,7 @@ public class SetDataView extends RelativeLayout {
     private DrawView drawView;
     private ArrayList<LeftRangePointBean> leftRangeList = new ArrayList<>();
     private ArrayList<RightRangePointBean> rightRangeList = new ArrayList<>();
+    private TextView tvResult;
 
     public SetDataView(Context context) {
         super(context);
@@ -54,6 +56,20 @@ public class SetDataView extends RelativeLayout {
         rlvLeft = inflate.findViewById(R.id.rlv_left);
         rlvRight = inflate.findViewById(R.id.rlv_right);
         drawView = inflate.findViewById(R.id.draw_view);
+        tvResult = inflate.findViewById(R.id.tv_result);
+    }
+
+    public void getResult() {
+        drawView.setOnChoiceResultListener(new DrawView.OnChoiceResultListener() {
+            @Override
+            public void onResultSelected(boolean correct) {
+                StringBuilder sp = new StringBuilder();
+                sp.append("正确与否：");
+                sp.append(correct);
+                sp.append("\n");
+                tvResult.setText(sp.toString());
+            }
+        });
     }
 
     public void setData(List<LinkDataBean> linkDataBeanList) {
@@ -94,21 +110,21 @@ public class SetDataView extends RelativeLayout {
     private void getResultList() {
         int width = drawView.getWidth();
         List<LinkLineBean> resultList = new ArrayList<>();
-            for (int i = 0; i < leftRangeList.size(); i++) {
-                float leftTop = leftRangeList.get(i).getLeftTop();
-                float leftBottom = leftRangeList.get(i).getLeftBottom();
-                LeftRangePointBean leftRangePointBean = leftRangeList.get(i);
-                for (int j = 0; j < rightRangeList.size(); j++) {
-                    RightRangePointBean rightRangePointBean = rightRangeList.get(j);
-                    if (leftRangePointBean.getQ_num() == rightRangePointBean.getQ_num()) {
-                        float rightTop = rightRangeList.get(j).getRightTop();
-                        float rightBottom = rightRangeList.get(j).getRightBottom();
-                        LinkLineBean leftLinkLineBean = new LinkLineBean(leftTop, leftBottom, rightTop, rightBottom);
-                        resultList.add(leftLinkLineBean);
-                    }
+        for (int i = 0; i < leftRangeList.size(); i++) {
+            float leftTop = leftRangeList.get(i).getLeftTop();
+            float leftBottom = leftRangeList.get(i).getLeftBottom();
+            LeftRangePointBean leftRangePointBean = leftRangeList.get(i);
+            for (int j = 0; j < rightRangeList.size(); j++) {
+                RightRangePointBean rightRangePointBean = rightRangeList.get(j);
+                if (leftRangePointBean.getQ_num() == rightRangePointBean.getQ_num()) {
+                    float rightTop = rightRangeList.get(j).getRightTop();
+                    float rightBottom = rightRangeList.get(j).getRightBottom();
+                    LinkLineBean leftLinkLineBean = new LinkLineBean(leftTop, leftBottom, rightTop, rightBottom);
+                    resultList.add(leftLinkLineBean);
                 }
             }
-            drawView.getRightAnswer(resultList);
+        }
+        drawView.getRightAnswer(resultList);
     }
 
     private void addLeftView() {
@@ -167,7 +183,7 @@ public class SetDataView extends RelativeLayout {
                     }
                 }
                 getResultList();
-                drawView.setRightPoint(rightRangeList);
+                drawView.setEndPoint(rightRangeList);
             }
         });
     }

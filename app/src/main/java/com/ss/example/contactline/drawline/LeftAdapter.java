@@ -29,7 +29,7 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(mContext).inflate(R.layout.left_data, parent,false);
+        View inflate = LayoutInflater.from(mContext).inflate(R.layout.left_data, parent, false);
         return new ViewHolder(inflate);
     }
 

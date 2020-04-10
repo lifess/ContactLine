@@ -21,7 +21,7 @@ public class DrawView extends View {
     private int size;
     private ArrayList<LeftRangePointBean> startList;
     private Context mContext;
-    private ArrayList<RightRangePointBean> rightRangeList;
+    private ArrayList<RightRangePointBean> endList;
     private List<LinkLineBean> resultList;
     private ArrayList<float[]> rightList = new ArrayList<>();
     private ArrayList<float[]> worryList = new ArrayList<>();
@@ -30,6 +30,7 @@ public class DrawView extends View {
     private Paint worryPaint;
     private boolean isRight = false;
     private boolean isSave = true;
+    private OnChoiceResultListener onChoiceResultListener;
 
 
     public DrawView(Context context) {
@@ -83,6 +84,11 @@ public class DrawView extends View {
                 float[] data = worryList.get(i);
                 canvas.drawLine(data[0], data[1], data[2], data[3], worryPaint);
             }
+            if (worryList.size() > 0) {
+                if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(false);
+            }else {
+                if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(true);
+            }
             isVerify = false;
         }
     }
@@ -102,7 +108,7 @@ public class DrawView extends View {
             case MotionEvent.ACTION_DOWN:
                 //根据数据的大小来确定可以画几条线
                 if (size > -1 && list.size() < size) {
-                    if (event.getX() < width / 2f) {
+                    if (event.getX() < width / 2f) {//确定起点x轴的位置
                         startX = 0;
                     } else {
                         startX = width;
@@ -119,7 +125,8 @@ public class DrawView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 //判断正连线，以及反连线
-                if (width <= endX && height >= endY || endX <= 0 && height >= endY) {
+                if (width <= endX && height >= endY && startX == 0
+                        || endX <= 0 && height >= endY && startX == width) {//确定线的起点和终点没问题才可以进行保存、移除、验证等操作
                     if (endX >= width) {//确定终点x轴位置
                         endX = width;
                     } else {
@@ -129,7 +136,7 @@ public class DrawView extends View {
                     float[] data = {startX, startY, endX, endY};
                     list.add(data);
                     verifyResult(width);
-                } else {
+                } else {//不符合要求的线直接移除
                     isSave = false;
                     paint.setColor(Color.TRANSPARENT);
                     invalidate();
@@ -147,12 +154,12 @@ public class DrawView extends View {
                 LeftRangePointBean s = startList.get(i);
                 float leftTop = s.getLeftTop();
                 float leftBottom = s.getLeftBottom();
-                for (int j = 0; j < rightRangeList.size(); j++) {
-                    RightRangePointBean bean = rightRangeList.get(j);
+                for (int j = 0; j < endList.size(); j++) {
+                    RightRangePointBean bean = endList.get(j);
                     float rightTop = bean.getRightTop();
                     float rightBottom = bean.getRightBottom();
 
-                    //左右连线相同，并且集合中的线的开始点和这次的线的开始点相同，移除
+                    //左右连线相同，并且list中的线的开始点和这次的线的开始点相同，移除
                     if (startY >= leftTop && startY <= leftBottom
                             && endY >= rightTop && endY <= rightBottom
                             && next[1] >= leftTop && next[1] <= leftBottom
@@ -161,7 +168,7 @@ public class DrawView extends View {
                         iterator.remove();
                     }
 
-                    ////左右连线相同，并且集合中的线的开始点和这次的线的结束点相同，移除
+                    ////左右连线相同，并且list中的线的开始点和这次的线的结束点相同，移除
                     if (startY >= leftTop && startY <= leftBottom
                             && endY >= rightTop && endY <= rightBottom
                             && next[1] >= rightTop && next[1] <= rightBottom
@@ -188,8 +195,8 @@ public class DrawView extends View {
                         iterator.remove();
                     }
 
-                    //左右连线相反时，集合里的线从右到左，这次的线从左到右，并且集合的线的终点和这次线的起点在同一个范围，
-                    //但集合的线的起点和这次线的终点不在同一个范围
+                    //左右连线相反时，list里的线从右到左，这次的线从左到右，并且list的线的终点和这次线的起点在同一个范围，
+                    //但list的线的起点和这次线的终点不在同一个范围
                     if (startY >= leftTop && startY <= leftBottom
                             && endY >= rightTop && endY <= rightBottom
                             && (next[1] <= rightTop || next[1] >= rightBottom)
@@ -198,8 +205,8 @@ public class DrawView extends View {
                         iterator.remove();
                     }
 
-                    //左右连线相反时，集合里的线从左到右，这次的线从右到左，并且集合的线的起点和这次线的终点在同一个范围，
-                    //但集合的线的终点和这次线的起点不在同一个范围
+                    //左右连线相反时，list里的线从左到右，这次的线从右到左，并且list的线的起点和这次线的终点在同一个范围，
+                    //但list的线的终点和这次线的起点不在同一个范围
                     if (startY >= leftTop && startY <= leftBottom
                             && endY >= rightTop && endY <= rightBottom
                             && next[1] >= rightTop && next[1] <= rightBottom
@@ -259,11 +266,19 @@ public class DrawView extends View {
         this.startList = startList;
     }
 
-    public void setRightPoint(ArrayList<RightRangePointBean> rightRangeList) {
-        this.rightRangeList = rightRangeList;
+    public void setEndPoint(ArrayList<RightRangePointBean> rightRangeList) {
+        this.endList = rightRangeList;
     }
 
     public void getRightAnswer(List<LinkLineBean> resultList) {
         this.resultList = resultList;
+    }
+
+    public interface OnChoiceResultListener {
+        void onResultSelected(boolean correct);
+    }
+
+    public void setOnChoiceResultListener(OnChoiceResultListener onChoiceResultListener) {
+        this.onChoiceResultListener = onChoiceResultListener;
     }
 }
