@@ -215,18 +215,17 @@ public class DrawView extends View {
     private void verifyResult(int width) { //验证对错
         if (size > 0 && list.size() >= size) {
             isVerify = true;
-            for (int i = 0; i < resultList.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
                 isRight = false;
-                LinkLineBean linkLineBean = resultList.get(i);
-                float leftTop = linkLineBean.getLeftTop();
-                float leftBottom = linkLineBean.getLeftBottom();
-                float rightTop = linkLineBean.getRightTop();
-                float rightBottom = linkLineBean.getRightBottom();
-                Log.i("sss", "verifyResult: 对的连线：" + leftTop + ": " + leftBottom + "---------" + rightTop + ": " + rightBottom);
-                Iterator<float[]> iterator = list.iterator();
-                while (iterator.hasNext()) {
-                    float[] next = iterator.next();
-                    Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + "-------" + next[2] + ": " + next[3]);
+                float[] next = list.get(i);
+                Log.i("sss", "verifyResult: " + next[0] + ": " + next[1] + "-------" + next[2] + ": " + next[3]);
+                for (int j = 0; j < resultList.size(); j++) {
+                    LinkLineBean linkLineBean = resultList.get(j);
+                    float leftTop = linkLineBean.getLeftTop();
+                    float leftBottom = linkLineBean.getLeftBottom();
+                    float rightTop = linkLineBean.getRightTop();
+                    float rightBottom = linkLineBean.getRightBottom();
+                    Log.i("sss", "verifyResult: 对的连线：" + leftTop + ": " + leftBottom + "---------" + rightTop + ": " + rightBottom);
                     if (next[0] == 0) {//如果从左边连的
                         if (next[1] >= leftTop && next[1] <= leftBottom
                                 && next[3] >= rightTop && next[3] <= rightBottom) {
@@ -245,7 +244,7 @@ public class DrawView extends View {
                     }
                 }
                 if (!isRight) {
-                    worryList.add(list.get(i));
+                    worryList.add(next);
                 }
             }
             invalidate();
