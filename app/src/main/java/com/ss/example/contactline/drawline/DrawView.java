@@ -26,8 +26,6 @@ public class DrawView extends View {
     private ArrayList<float[]> rightList = new ArrayList<>();
     private ArrayList<float[]> worryList = new ArrayList<>();
     private boolean isVerify = false;
-    private Paint rightPaint;
-    private Paint worryPaint;
     private boolean isRight = false;
     private boolean isSave = true;
     private OnChoiceResultListener onChoiceResultListener;
@@ -53,43 +51,39 @@ public class DrawView extends View {
         paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(5);
-        rightPaint = new Paint();
-        rightPaint.setColor(Color.GREEN);
-        rightPaint.setStrokeWidth(5);
-        worryPaint = new Paint();
-        worryPaint.setColor(Color.RED);
-        worryPaint.setStrokeWidth(5);
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawLine(startX, startY, endX, endY, paint);
-        if (!isSave) {
-            paint.setColor(Color.BLACK);
-            isSave = true;
-        }
-        for (int i = 0; i < list.size(); i++) {
-            float[] data = list.get(i);
-            canvas.drawLine(data[0], data[1], data[2], data[3], paint);
-        }
-
-        if (isVerify) {
+        if (!isVerify) {
+            canvas.drawLine(startX, startY, endX, endY, paint);
+            if (!isSave) {
+                paint.setColor(Color.BLACK);
+                isSave = true;
+            }
+            for (int i = 0; i < list.size(); i++) {
+                float[] data = list.get(i);
+                canvas.drawLine(data[0], data[1], data[2], data[3], paint);
+            }
+        }else {
             for (int i = 0; i < rightList.size(); i++) {
+                paint.setColor(Color.GREEN);
                 float[] data = rightList.get(i);
-                canvas.drawLine(data[0], data[1], data[2], data[3], rightPaint);
+                canvas.drawLine(data[0], data[1], data[2], data[3], paint);
             }
             for (int i = 0; i < worryList.size(); i++) {
+                paint.setColor(Color.RED);
                 float[] data = worryList.get(i);
-                canvas.drawLine(data[0], data[1], data[2], data[3], worryPaint);
+                canvas.drawLine(data[0], data[1], data[2], data[3], paint);
             }
             if (worryList.size() > 0) {
                 if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(false);
             }else {
                 if (onChoiceResultListener != null) onChoiceResultListener.onResultSelected(true);
             }
-            isVerify = false;
+//            isVerify = false;
         }
     }
 
