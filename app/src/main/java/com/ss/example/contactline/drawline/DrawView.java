@@ -160,6 +160,7 @@ public class DrawView extends View {
                             && next[3] >= rightTop && next[3] <= rightBottom
                             && next[0] == startX && next[2] == endX) {
                         iterator.remove();
+                        invalidate();
                     }
 
                     ////左右连线相同，并且list中的线的开始点和这次的线的结束点相同，移除
@@ -169,6 +170,7 @@ public class DrawView extends View {
                             && next[3] >= leftTop && next[3] <= leftBottom
                             && next[0] == endX && next[2] == startX) {
                         iterator.remove();
+                        invalidate();
                     }
 
                     //右连线不同，删除起点在同一个范围内,但终点不在同一个范围内的线
@@ -178,6 +180,7 @@ public class DrawView extends View {
                             && (next[3] <= rightTop || next[3] >= rightBottom)
                             && next[0] == startX) {
                         iterator.remove();
+                        invalidate();
                     }
 
                     //左连线不同，删除终点在同一个范围内,但起点不在同一个范围内的线
@@ -187,6 +190,7 @@ public class DrawView extends View {
                             && next[3] >= rightTop && next[3] <= rightBottom
                             && next[2] == endX) {
                         iterator.remove();
+                        invalidate();
                     }
 
                     //左右连线相反时，list里的线从右到左，这次的线从左到右，并且list的线的终点和这次线的起点在同一个范围，
@@ -197,6 +201,7 @@ public class DrawView extends View {
                             && next[3] >= leftTop && next[3] <= leftBottom
                             && next[2] == startX) {
                         iterator.remove();
+                        invalidate();
                     }
 
                     //左右连线相反时，list里的线从左到右，这次的线从右到左，并且list的线的起点和这次线的终点在同一个范围，
@@ -207,6 +212,7 @@ public class DrawView extends View {
                             && (next[3] <= leftTop || next[3] >= leftBottom)
                             && next[0] == endX) {
                         iterator.remove();
+                        invalidate();
                     }
                 }
             }
