@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.ss.example.contactline.R;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +56,7 @@ public class DrawView extends View {
     private void init(Context context) {
         mContext = context;
         paint = new Paint();
-        paint.setColor(Color.BLACK);
+        paint.setColor(getResources().getColor(R.color.black));
         paint.setStrokeWidth(5);
     }
 
@@ -74,12 +76,14 @@ public class DrawView extends View {
             }
         } else {
             for (int i = 0; i < rightList.size(); i++) {
-                paint.setColor(Color.GREEN);
+                paint.setColor(getResources().getColor(R.color.answer_right));
+                paint.setStrokeWidth(6);
                 float[] data = rightList.get(i);
                 canvas.drawLine(data[0], data[1], data[2], data[3], paint);
             }
             for (int i = 0; i < worryList.size(); i++) {
-                paint.setColor(Color.RED);
+                paint.setColor(getResources().getColor(R.color.answer_wrong));
+                paint.setStrokeWidth(6);
                 float[] data = worryList.get(i);
                 canvas.drawLine(data[0], data[1], data[2], data[3], paint);
             }

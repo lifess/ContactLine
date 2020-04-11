@@ -1,4 +1,4 @@
-package com.ss.example.contactline;
+package com.ss.example.contactline.drawline;
 
 
 public class LinkDataBean {

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ss.example.contactline.LinkDataBean;
 import com.ss.example.contactline.R;
 
 import java.util.List;

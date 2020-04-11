@@ -9,7 +9,6 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ss.example.contactline.LinkDataBean;
 import com.ss.example.contactline.R;
 
 import java.util.ArrayList;

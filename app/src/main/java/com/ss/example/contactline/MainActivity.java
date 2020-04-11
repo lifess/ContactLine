@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.ss.example.contactline.drawline.LinkDataBean;
 import com.ss.example.contactline.drawline.SetDataView;
 
 import java.lang.reflect.Type;
