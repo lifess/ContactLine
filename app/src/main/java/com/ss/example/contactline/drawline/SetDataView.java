@@ -94,25 +94,6 @@ public class SetDataView extends RelativeLayout {
         addRightView();
     }
 
-    private void getResultList() {
-        List<LinkLineBean> resultList = new ArrayList<>();
-        for (int i = 0; i < leftRangeList.size(); i++) {
-            float leftTop = leftRangeList.get(i).getLeftTop();
-            float leftBottom = leftRangeList.get(i).getLeftBottom();
-            LeftRangePointBean leftRangePointBean = leftRangeList.get(i);
-            for (int j = 0; j < rightRangeList.size(); j++) {
-                RightRangePointBean rightRangePointBean = rightRangeList.get(j);
-                if (leftRangePointBean.getQ_num() == rightRangePointBean.getQ_num()) {
-                    float rightTop = rightRangeList.get(j).getRightTop();
-                    float rightBottom = rightRangeList.get(j).getRightBottom();
-                    LinkLineBean leftLinkLineBean = new LinkLineBean(leftTop, leftBottom, rightTop, rightBottom);
-                    resultList.add(leftLinkLineBean);
-                }
-            }
-        }
-        drawView.getRightAnswer(resultList);
-    }
-
     private void addLeftView() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         rlvLeft.setLayoutManager(layoutManager);
@@ -174,7 +155,26 @@ public class SetDataView extends RelativeLayout {
         });
     }
 
-    public void getResult() {
+    private void getResultList() {//将正确答案对应的左右的top和bottom点获取到并放入集合
+        List<LinkLineBean> resultList = new ArrayList<>();
+        for (int i = 0; i < leftRangeList.size(); i++) {
+            float leftTop = leftRangeList.get(i).getLeftTop();
+            float leftBottom = leftRangeList.get(i).getLeftBottom();
+            LeftRangePointBean leftRangePointBean = leftRangeList.get(i);
+            for (int j = 0; j < rightRangeList.size(); j++) {
+                RightRangePointBean rightRangePointBean = rightRangeList.get(j);
+                if (leftRangePointBean.getQ_num() == rightRangePointBean.getQ_num()) {
+                    float rightTop = rightRangeList.get(j).getRightTop();
+                    float rightBottom = rightRangeList.get(j).getRightBottom();
+                    LinkLineBean leftLinkLineBean = new LinkLineBean(leftTop, leftBottom, rightTop, rightBottom);
+                    resultList.add(leftLinkLineBean);
+                }
+            }
+        }
+        drawView.getRightAnswer(resultList);
+    }
+
+    public void getResult() {//获取连线结果
         drawView.setOnChoiceResultListener(new DrawView.OnChoiceResultListener() {
             @Override
             public void onResultSelected(boolean correct) {
